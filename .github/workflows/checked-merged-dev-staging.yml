@@ -1,0 +1,39 @@
+name: Check Feature Branch Merged into Dev and Staging
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-merged:
+    name: Validate feature branch is merged into dev and staging
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Fetch all branches
+        run: |
+          git fetch --all
+
+      - name: Check merge into dev and staging
+        run: |
+          FEATURE_BRANCH="${{ github.head_ref }}"
+          echo "Checking if '${FEATURE_BRANCH}' was merged into 'dev' and 'staging'..."
+
+          # Check if feature branch commits exist in dev
+          if git merge-base --is-ancestor origin/"$FEATURE_BRANCH" origin/dev; then
+            echo "✅ Feature branch is merged into dev."
+          else
+            echo "❌ Feature branch is NOT merged into dev."
+            exit 1
+          fi
+
+          # Check if feature branch commits exist in staging
+          if git merge-base --is-ancestor origin/"$FEATURE_BRANCH" origin/staging; then
+            echo "✅ Feature branch is merged into staging."
+          else
+            echo "❌ Feature branch is NOT merged into staging."
+            exit 1
+          fi
