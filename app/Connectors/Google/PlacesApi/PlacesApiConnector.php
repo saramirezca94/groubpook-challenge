@@ -2,72 +2,63 @@
 
 namespace App\Connectors\Google\PlacesApi;
 
-use Illuminate\Http\Client\Response;
-use Illuminate\Support\Facades\Http;
+use App\Connectors\GenericConnector;
 
-class PlacesApiConnector
+class PlacesApiConnector extends GenericConnector
 {
-    protected $url;
-    protected $apiKey;
-    protected $location;
-    protected $radius;
-    protected $type;
-    protected $placeId;
+  protected string $url;
+  protected string $apiKey;
+  protected string $location;
+  protected string $radius;
+  protected string $type;
+  protected string $placeId;
 
-    public function __construct()
-    {
-        $this->url = config('google.placesApi.url');
-        $this->apiKey = config('google.placesApi.key');
-    }
+  public function __construct()
+  {
+    $this->url = config('google.placesApi.url');
+    $this->apiKey = config('google.placesApi.key');
+  }
 
-    public function setLocation(string $location): void
-    {
-        $this->location = $location;
-    }
+  public function setLocation(string $location): void
+  {
+    $this->location = $location;
+  }
 
-    public function setRadius(string $radius): void
-    {
-        $this->radius = $radius;
-    }
+  public function setRadius(string $radius): void
+  {
+    $this->radius = $radius;
+  }
 
-    public function setType(string $type): void
-    {
-        $this->type = $type;
-    }
+  public function setType(string $type): void
+  {
+    $this->type = $type;
+  }
 
-    public function setPlaceId(string $placeId): void
-    {
-        $this->placeId = $placeId;
-    }
+  public function setPlaceId(string $placeId): void
+  {
+    $this->placeId = $placeId;
+  }
 
-    public function makePlacesListRequest(): Response
-    {
-        $url = "$this->url/nearbysearch/json";
-        $params = [
-            'location' => $this->location,
-            'radius' => $this->radius,
-            'type' => $this->type,
-            'key' => $this->apiKey
-        ];
-        $response = $this->makeGetRequest(url: $url, params: $params);
+  public function makePlacesListRequest(): array
+  {
+    $url = "$this->url/nearbysearch/json";
+    $params = [
+      'location' => $this->location,
+      'radius' => $this->radius,
+      'type' => $this->type,
+      'key' => $this->apiKey
+    ];
 
-        return $response;
-    }
+    return $this->makeGetRequest(url: $url, params: $params);
+  }
 
-    public function makePlaceDetailsRequest(): Response
-    {
-        $url = "$this->url/details/json";
-        $params = [
-            'place_id' => $this->placeId,
-            'key' => $this->apiKey
-        ];
-        $response = $this->makeGetRequest(url: $url, params: $params);
-
-        return $response;
-    }
-
-    private function makeGetRequest(string $url, array $params = []): Response
-    {
-        return Http::get($url, $params);
-    }
+  public function makePlaceDetailsRequest(): array
+  {
+    $url = "$this->url/details/json";
+    $params = [
+      'place_id' => $this->placeId,
+      'key' => $this->apiKey
+    ];
+    return $this->makeGetRequest(url: $url, params: $params);
+  }
 }

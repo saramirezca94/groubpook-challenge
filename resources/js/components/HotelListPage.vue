@@ -193,6 +193,7 @@ export default {
         })
         .catch((error) => {
           this.loadingHotels = false;
+          this.buttonDisabled = false;
           toastr.error(error.response.data.message, "Error");
 
           if (axios.isCancel(error)) {

@@ -10,10 +10,19 @@ export default defineConfig({
         }),
         vue({
             template: {
-              compilerOptions: {
-                isCustomElement: (tag) => ['hotel-list'].includes(tag),
-              }
+                compilerOptions: {
+                    isCustomElement: (tag) => ['hotel-list'].includes(tag),
+                }
             }
-          }),
+        }),
     ],
+    server: {
+        host: '0.0.0.0',
+        port: 5173,
+        strictPort: true,
+        hmr: {
+            host: 'localhost',
+            port: 5173,
+        },
+    },
 });
